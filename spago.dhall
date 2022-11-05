@@ -3,7 +3,6 @@
   [ "arrays"
   , "console"
   , "effect"
-  , "either"
   , "prelude"
   , "strings"
   , "test-unit"

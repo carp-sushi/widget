@@ -3,12 +3,11 @@ module Data.Cmd where
 import Prelude (pure, show, ($))
 
 import Data.Array (foldMap)
-import Data.Either (Either(..))
-import Data.Monoid (mempty)
-import Data.Validation.Semigroup (V(..), invalid, validation, andThen)
+import Data.Validation.Semigroup (V, validation, andThen)
 
-import Data.Rule (Rule, applyRule)
-import Data.Validate (Errors(..), isEmpty, validateWidget, validateRule)
+import Data.Errors (Errors(..))
+import Data.Rule (applyRule)
+import Data.Validate (validateWidget, validateRule)
 import Data.Widget (Widget, nameValue)
 
 -- | The unvalidated input widget type
@@ -54,27 +53,12 @@ execute input =
     outputWidget
     (validateInput input)
 
--- | Validate input and apply all actions to a widget or return errors.
+-- | Validate input and apply a rule to a widget or return errors.
 validateInput :: Input -> V Errors Widget
 validateInput { widget: w, rule: rs } =
   validateWidget w.name w.paint w.size w.core `andThen` \widget ->
-    if isEmpty errors then
-      pure $ applyRule widget (getRule result)
-    else
-      invalid errors
-  where
-  result = foldMap (\r -> validateRule r.name r.value) rs
-  errors = getErrors result
-
--- | Helper for folding validated rules into a single rule.
-getRule :: V Errors Rule -> Rule
-getRule (V (Left _)) = mempty
-getRule (V (Right rule)) = rule
-
--- | Collect action validation errors.
-getErrors :: V Errors Rule -> Errors
-getErrors (V (Left errors)) = errors
-getErrors (V (Right _)) = mempty
+    (foldMap (\r -> validateRule r.name r.value) rs) `andThen` \rule ->
+      pure $ applyRule widget rule
 
 -- | Validation failure: add validation errors to the output.
 outputErrors :: Input -> Errors -> Output

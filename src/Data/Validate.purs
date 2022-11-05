@@ -1,41 +1,14 @@
 module Data.Validate where
 
-import Prelude (class Eq, class Semigroup, class Show, pure, (<>), (<*>), (<$>), ($))
+import Prelude (pure, (<>), (<*>), (<$>), ($))
 
-import Data.Array (null)
-import Data.Generic.Rep (class Generic)
-import Data.Monoid (class Monoid)
-import Data.Show.Generic (genericShow)
 import Data.String.Common (trim)
 import Data.Validation.Semigroup (V, andThen, invalid)
 
 import Data.Action (Action(..))
+import Data.Errors (Errors, mkError)
 import Data.Rule (Rule(..))
 import Data.Widget (Color(..), Material(..), Name(..), Size(..), Widget, mkWidget)
-
--- | Validation error type
-newtype Errors = Errors (Array String)
-
-derive instance eqErrors :: Eq Errors
-derive instance genericErrors :: Generic Errors _
-
-instance showErrors :: Show Errors where
-  show = genericShow
-
-instance semigroupErrors :: Semigroup Errors where
-  append (Errors e1) (Errors e2) = Errors $ e1 <> e2
-
-instance monoidErrors :: Monoid Errors where
-  mempty = Errors []
-
--- | Error helper
-mkError :: String -> Errors
-mkError s =
-  Errors [ s ]
-
--- | Check that error array is empty.
-isEmpty :: Errors -> Boolean
-isEmpty (Errors xs) = null xs
 
 -- | Non-empty string validation
 nonEmpty :: String -> String -> V Errors String
