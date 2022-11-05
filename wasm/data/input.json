@@ -1,0 +1,9 @@
+{
+  "rule": [
+    {"name":"ApplyName","value":"MyWidget"},
+    {"name":"ApplySize","value":"Large"},
+    {"name":"ApplyCore","value":"Steel"},
+    {"name":"ApplyPaint","value":"Blue"}
+  ],
+  "widget": {"name":"default","paint":"White","core":"Carbon","size":"Small"}
+}

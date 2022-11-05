@@ -1,0 +1,6 @@
+{
+  "rule": [
+    {"name":"ApplyName","value":"Error"}
+  ],
+  "widget": {"name":"","paint":"","core":"","size":""}
+}
