@@ -55,9 +55,9 @@ execute input =
 
 -- | Validate input and apply a rule to a widget or return errors.
 validateInput :: Input -> V Errors Widget
-validateInput { widget: w, rule: rs } =
+validateInput { widget: w, rule: actions } =
   validateWidget w.name w.paint w.size w.core `andThen` \widget ->
-    (foldMap (\r -> validateRule r.name r.value) rs) `andThen` \rule ->
+    (foldMap (\a -> validateRule a.name a.value) actions) `andThen` \rule ->
       pure $ applyRule widget rule
 
 -- | Validation failure: add validation errors to the output.
