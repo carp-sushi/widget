@@ -1,6 +1,6 @@
 {
   "rule": [
-    {"name":"ApplyName","value":"Error"}
+    {"name":"ApplyCoating","value":"Wax"}
   ],
   "widget": {"name":"","paint":"","core":"","size":""}
 }

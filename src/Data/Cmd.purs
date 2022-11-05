@@ -1,9 +1,9 @@
 module Data.Cmd where
 
-import Prelude (pure, show, ($))
+import Prelude (show, ($), (<$>), (<*>))
 
 import Data.Array (foldMap)
-import Data.Validation.Semigroup (V, validation, andThen)
+import Data.Validation.Semigroup (V, validation)
 
 import Data.Errors (Errors(..))
 import Data.Rule (Rule, applyRule)
@@ -37,6 +37,11 @@ type ValidatedInput =
   , widget :: Widget
   }
 
+-- | Validated input constructor.
+mkValidated :: Rule -> Widget -> ValidatedInput
+mkValidated rule widget =
+  { rule, widget }
+
 -- | The command output type.
 type Output =
   { widget :: CmdWidget
@@ -54,9 +59,9 @@ execute input =
 -- | Validate input widget and rule.
 validateInput :: Input -> V Errors ValidatedInput
 validateInput { widget: w, rule: actions } =
-  validateWidget w.name w.paint w.size w.core `andThen` \widget ->
-    (foldMap (\a -> validateRule a.name a.value) actions) `andThen` \rule ->
-      pure { rule, widget }
+  mkValidated
+    <$> foldMap (\a -> validateRule a.name a.value) actions
+    <*> validateWidget w.name w.paint w.size w.core
 
 -- | Validation failure: add validation errors to the output.
 outputErrors :: Input -> Errors -> Output
