@@ -6,7 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Monoid (class Monoid)
 import Data.Show.Generic (genericShow)
 
--- | Define an Error type for validation.
+-- | Defines validation errors.
 newtype Errors = Errors (Array String)
 
 derive instance eqErrors :: Eq Errors

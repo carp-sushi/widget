@@ -6,16 +6,70 @@ import Data.Array (foldMap)
 import Data.Validation.Semigroup (V, validation, andThen)
 
 import Data.Errors (Errors(..))
-import Data.Rule (applyRule)
+import Data.Rule (Rule, applyRule)
 import Data.Validate (validateWidget, validateRule)
 import Data.Widget (Widget, nameValue)
 
--- | The unvalidated input widget type
+-- | The input/ouput widget type. We need this because ADTs, while great for type-safe logic,
+-- | don't work well with JSON.
 type CmdWidget =
   { name :: String
   , paint :: String
   , size :: String
   , core :: String
+  }
+
+-- | The unvalidated input action 
+type CmdAction =
+  { name :: String
+  , value :: String
+  }
+
+-- | The unvalidated command input 
+type Input =
+  { rule :: Array CmdAction
+  , widget :: CmdWidget
+  }
+
+-- | The validated command input 
+type ValidatedInput =
+  { rule :: Rule
+  , widget :: Widget
+  }
+
+-- | The command output type.
+type Output =
+  { widget :: CmdWidget
+  , errors :: Array String
+  }
+
+-- | Execute the command. This is the function called by the Wasm runtime.
+execute :: Input -> Output
+execute input =
+  validation
+    (outputErrors input)
+    outputWidget
+    (validateInput input)
+
+-- | Validate input widget and rule.
+validateInput :: Input -> V Errors ValidatedInput
+validateInput { widget: w, rule: actions } =
+  validateWidget w.name w.paint w.size w.core `andThen` \widget ->
+    (foldMap (\a -> validateRule a.name a.value) actions) `andThen` \rule ->
+      pure { rule, widget }
+
+-- | Validation failure: add validation errors to the output.
+outputErrors :: Input -> Errors -> Output
+outputErrors input (Errors errors) =
+  { widget: input.widget
+  , errors
+  }
+
+-- | Validation success: apply the rule and add the updated widget to the output.
+outputWidget :: ValidatedInput -> Output
+outputWidget { rule, widget } =
+  { widget: mkCmdWidget $ applyRule rule widget
+  , errors: []
   }
 
 -- | Convert modified widget to output type.
@@ -25,52 +79,5 @@ mkCmdWidget widget =
   , paint: show widget.paint
   , size: show widget.size
   , core: show widget.core
-  }
-
--- | The unvalidated input action type
-type CmdAction =
-  { name :: String
-  , value :: String
-  }
-
--- | The command input type
-type Input =
-  { rule :: Array CmdAction
-  , widget :: CmdWidget
-  }
-
--- | The command output type.
-type Output =
-  { widget :: CmdWidget
-  , errors :: Array String
-  }
-
--- | Execute the command.
-execute :: Input -> Output
-execute input =
-  validation
-    (outputErrors input)
-    outputWidget
-    (validateInput input)
-
--- | Validate input and apply a rule to a widget or return errors.
-validateInput :: Input -> V Errors Widget
-validateInput { widget: w, rule: actions } =
-  validateWidget w.name w.paint w.size w.core `andThen` \widget ->
-    (foldMap (\a -> validateRule a.name a.value) actions) `andThen` \rule ->
-      pure $ applyRule widget rule
-
--- | Validation failure: add validation errors to the output.
-outputErrors :: Input -> Errors -> Output
-outputErrors input (Errors errors) =
-  { widget: input.widget
-  , errors
-  }
-
--- | Validation success: add the updated widget to the output.
-outputWidget :: Widget -> Output
-outputWidget widget =
-  { widget: mkCmdWidget widget
-  , errors: []
   }
 

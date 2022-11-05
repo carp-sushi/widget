@@ -11,7 +11,7 @@ import Data.Show.Generic (genericShow)
 import Data.Action (Action, applyAction)
 import Data.Widget (Widget)
 
--- | Defines a set of actions.
+-- | Defines a sequence of actions.
 newtype Rule = Rule (Array Action)
 
 derive instance eqRule :: Eq Rule
@@ -27,7 +27,7 @@ instance monoidRule :: Monoid Rule where
   mempty = Rule []
 
 -- | Apply a rule (set of actions) to a widget.
-applyRule :: Widget -> Rule -> Widget
-applyRule widget (Rule actions) =
+applyRule :: Rule -> Widget -> Widget
+applyRule (Rule actions) widget =
   foldl (\w a -> applyAction w a) widget actions
 
