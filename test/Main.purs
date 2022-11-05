@@ -71,50 +71,37 @@ multiOutput =
   }
 
 -- Invalid command input.
-invalidWidgetInput :: Input
-invalidWidgetInput =
-  { rule: [ { name: "ApplyPaint", value: show Black } ]
-  , widget: { name: "", paint: "teal", size: "xl", core: "wax" }
+invalidInput :: Input
+invalidInput =
+  { rule:
+      [ { name: "ApplyCoating", value: "Wax" }
+      , { name: "", value: "" }
+      ]
+  , widget:
+      { name: ""
+      , paint: "teal"
+      , size: "xl"
+      , core: "wax"
+      }
   }
 
 -- Command output with expected error messages
 errorOutput :: Output
 errorOutput =
-  { widget: { name: "", paint: "teal", size: "xl", core: "wax" }
+  { widget:
+      { name: ""
+      , paint: "teal"
+      , size: "xl"
+      , core: "wax"
+      }
   , errors:
-      [ "Name cannot be empty"
+      [ "Invalid action: ApplyCoating"
+      , "Action name cannot be empty"
+      , "Name cannot be empty"
       , "Invalid color: teal"
       , "Invalid size: xl"
       , "Invalid material: wax"
       ]
-  }
-
--- Command input with an invalid action that cause an error.
-invalidActionInput :: Input
-invalidActionInput =
-  { rule: [ { name: "ApplyCoating", value: "Wax" } ]
-  , widget: testWidget
-  }
-
--- Command output with an expected error message
-errorOutput2 :: Output
-errorOutput2 =
-  { widget: testWidget
-  , errors: [ "Invalid action: ApplyCoating" ]
-  }
-
--- Command input with an invalid action that cause an error.
-emptyActionInput :: Input
-emptyActionInput =
-  { rule: [ { name: "", value: "" } ]
-  , widget: testWidget
-  }
-
--- Command output with an expected error message
-errorOutput3 :: Output
-errorOutput3 =
-  { widget: testWidget
-  , errors: [ "Action name cannot be empty" ]
   }
 
 -- Run all tests
@@ -138,12 +125,8 @@ cmdTest = do
       Assert.equal multiOutput (execute multiInput)
     test "echo input widget on empty actions" do
       Assert.equal baseOut (execute base)
-    test "fail on invalid input widget" do
-      Assert.equal errorOutput (execute invalidWidgetInput)
-    test "fail on invalid input action" do
-      Assert.equal errorOutput2 (execute invalidActionInput)
-    test "fail on empty input action" do
-      Assert.equal errorOutput3 (execute emptyActionInput)
+    test "fail on invalid input" do
+      Assert.equal errorOutput (execute invalidInput)
 
 -- Test widget validation
 widgetTest :: TestSuite
