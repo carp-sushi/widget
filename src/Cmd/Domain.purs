@@ -1,11 +1,11 @@
-module Data.Widget where
+module Cmd.Domain where
 
 import Prelude (class Eq, class Show, (==))
 
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
--- | Core data type
+-- | Core domain object type for this example.
 type Widget =
   { name :: Name
   , paint :: Color

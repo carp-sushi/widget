@@ -9,10 +9,10 @@ import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 -- Modules being tested
-import Data.Cmd (CmdWidget, Input, Output, execute, mkCmdWidget)
-import Data.Errors (Errors(..), mkError)
-import Data.Widget (Name(..), Color(..), Size(..), Material(..), mkWidget)
-import Data.Validate
+import Cmd (CmdWidget, Input, Output, execute, mkCmdWidget)
+import Cmd.Domain (Name(..), Color(..), Size(..), Material(..), mkWidget)
+import Cmd.Errors (Errors(..), mkError)
+import Cmd.Validate
   ( validateColor
   , validateMaterial
   , validateName

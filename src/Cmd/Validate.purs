@@ -1,14 +1,14 @@
-module Data.Validate where
+module Cmd.Validate where
 
 import Prelude (pure, (<>), (<*>), (<$>), ($))
 
+import Cmd.Action (Action(..))
+import Cmd.Domain (Color(..), Material(..), Name(..), Size(..), Widget, mkWidget)
+import Cmd.Errors (Errors, mkError)
+import Cmd.Rule (Rule(..))
+
 import Data.String.Common (trim)
 import Data.Validation.Semigroup (V, andThen, invalid)
-
-import Data.Action (Action(..))
-import Data.Errors (Errors, mkError)
-import Data.Rule (Rule(..))
-import Data.Widget (Color(..), Material(..), Name(..), Size(..), Widget, mkWidget)
 
 -- | Non-empty string validation
 nonEmpty :: String -> String -> V Errors String

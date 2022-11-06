@@ -1,15 +1,15 @@
-module Data.Rule where
+module Cmd.Rule where
 
 import Prelude (class Eq, class Show)
 
-import Data.Array (foldl)
+import Cmd.Action (Action, applyAction)
+import Cmd.Domain (Widget)
+
+import Data.Array (foldr)
 import Data.Generic.Rep (class Generic)
 import Data.Monoid (class Monoid)
 import Data.Semigroup (class Semigroup, (<>))
 import Data.Show.Generic (genericShow)
-
-import Data.Action (Action, applyAction)
-import Data.Widget (Widget)
 
 -- | Defines a sequence of actions.
 newtype Rule = Rule (Array Action)
@@ -29,5 +29,5 @@ instance monoidRule :: Monoid Rule where
 -- | Apply a rule (set of actions) to a widget.
 applyRule :: Rule -> Widget -> Widget
 applyRule (Rule actions) widget =
-  foldl (\w a -> applyAction w a) widget actions
+  foldr (\a w -> applyAction a w) widget actions
 

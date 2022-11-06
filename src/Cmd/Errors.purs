@@ -1,4 +1,4 @@
-module Data.Errors where
+module Cmd.Errors where
 
 import Prelude (class Eq, class Semigroup, class Show, (<>), ($))
 

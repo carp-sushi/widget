@@ -1,11 +1,11 @@
-module Data.Action where
+module Cmd.Action where
 
 import Prelude (class Eq, class Show)
 
+import Cmd.Domain (Name, Color, Material, Size, Widget)
+
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
-
-import Data.Widget (Name, Color, Material, Size, Widget)
 
 -- | Defines actions that may be peformed on a widget.
 data Action
@@ -21,9 +21,9 @@ instance showAction :: Show Action where
   show = genericShow
 
 -- | Apply an action to a widget.
-applyAction :: Widget -> Action -> Widget
-applyAction widget (ApplyName name) = widget { name = name }
-applyAction widget (ApplyPaint paint) = widget { paint = paint }
-applyAction widget (ApplyCore core) = widget { core = core }
-applyAction widget (ApplySize size) = widget { size = size }
+applyAction :: Action -> Widget -> Widget
+applyAction (ApplyName name) widget = widget { name = name }
+applyAction (ApplyPaint paint) widget = widget { paint = paint }
+applyAction (ApplyCore core) widget = widget { core = core }
+applyAction (ApplySize size) widget = widget { size = size }
 

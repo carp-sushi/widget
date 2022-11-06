@@ -1,14 +1,14 @@
-module Data.Cmd where
+module Cmd where
 
 import Prelude (show, ($), (<$>), (<*>))
 
+import Cmd.Errors (Errors(..))
+import Cmd.Rule (Rule, applyRule)
+import Cmd.Validate (validateWidget, validateRule)
+import Cmd.Domain (Widget, nameValue)
+
 import Data.Array (foldMap)
 import Data.Validation.Semigroup (V, validation)
-
-import Data.Errors (Errors(..))
-import Data.Rule (Rule, applyRule)
-import Data.Validate (validateWidget, validateRule)
-import Data.Widget (Widget, nameValue)
 
 -- | The input/ouput widget type. We need this because ADTs, while great for type-safe logic,
 -- | don't work well with JSON.

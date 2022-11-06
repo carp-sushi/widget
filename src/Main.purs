@@ -2,8 +2,7 @@ module Main where
 
 import Prelude (Unit, discard, ($))
 
-import Data.Cmd (CmdAction, CmdWidget, execute, mkCmdWidget)
-import Data.Widget (Name(..), Color(..), Size(..), Material(..), mkWidget)
+import Cmd (CmdAction, CmdWidget, execute)
 import Effect (Effect)
 import Effect.Console (log, logShow)
 
@@ -17,7 +16,11 @@ rule =
 -- | Valid input widget.
 widget :: CmdWidget
 widget =
-  mkCmdWidget $ mkWidget (Name "default") White Small Carbon
+  { name: "default"
+  , paint: "White"
+  , size: "Small"
+  , core: "Carbon"
+  }
 
 -- | Demonstract command execution.
 main :: Effect Unit
