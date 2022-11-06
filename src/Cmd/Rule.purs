@@ -31,3 +31,7 @@ applyRule :: Rule -> Widget -> Widget
 applyRule (Rule actions) widget =
   foldr (\a w -> applyAction a w) widget actions
 
+-- | Rule helper
+mkRule :: Action -> Rule
+mkRule action =
+  Rule [ action ]

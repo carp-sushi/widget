@@ -5,7 +5,7 @@ import Prelude (pure, (<>), (<*>), (<$>), ($))
 import Cmd.Action (Action(..))
 import Cmd.Domain (Color(..), Material(..), Name(..), Size(..), Widget, mkWidget)
 import Cmd.Errors (Errors, mkError)
-import Cmd.Rule (Rule(..))
+import Cmd.Rule (Rule, mkRule)
 
 import Data.String.Common (trim)
 import Data.Validation.Semigroup (V, andThen, invalid)
@@ -79,6 +79,5 @@ validateAction name value =
 -- | Make a rule from validating a single action.
 validateRule :: String -> String -> V Errors Rule
 validateRule name value =
-  validateAction name value `andThen` \action ->
-    pure $ Rule [ action ]
+  mkRule <$> validateAction name value
 

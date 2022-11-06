@@ -2,10 +2,10 @@ module Cmd where
 
 import Prelude (show, ($), (<$>), (<*>))
 
+import Cmd.Domain (Widget, nameValue)
 import Cmd.Errors (Errors(..))
 import Cmd.Rule (Rule, applyRule)
 import Cmd.Validate (validateWidget, validateRule)
-import Cmd.Domain (Widget, nameValue)
 
 import Data.Array (foldMap)
 import Data.Validation.Semigroup (V, validation)
