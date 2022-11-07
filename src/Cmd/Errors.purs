@@ -21,7 +21,7 @@ instance semigroupErrors :: Semigroup Errors where
 instance monoidErrors :: Monoid Errors where
   mempty = Errors []
 
--- | Error helper
+-- | Create an error with one string.
 mkError :: String -> Errors
 mkError s =
   Errors [ s ]

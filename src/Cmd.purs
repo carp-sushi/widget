@@ -12,23 +12,29 @@ import Data.Validation.Semigroup (V, validation)
 
 -- | The input/ouput widget type. We need this because ADTs, while great for type-safe logic,
 -- | don't work well with JSON.
-type CmdWidget =
+type InputWidget =
   { name :: String
   , paint :: String
   , size :: String
   , core :: String
   }
 
+-- | Output state is the same as input
+type OutputWidget = InputWidget
+
 -- | The unvalidated input action 
-type CmdAction =
+type InputAction =
   { name :: String
   , value :: String
   }
 
+-- | The unvalidated input rule
+type InputRule = Array InputAction
+
 -- | The unvalidated command input 
 type Input =
-  { rule :: Array CmdAction
-  , widget :: CmdWidget
+  { rule :: InputRule
+  , widget :: InputWidget
   }
 
 -- | The validated command input 
@@ -44,7 +50,7 @@ mkValidated rule widget =
 
 -- | The command output type.
 type Output =
-  { widget :: CmdWidget
+  { widget :: OutputWidget
   , errors :: Array String
   }
 
@@ -53,7 +59,7 @@ execute :: Input -> Output
 execute input =
   validation
     (outputErrors input)
-    outputWidget
+    output
     (validateInput input)
 
 -- | Validate input widget and rule.
@@ -71,15 +77,15 @@ outputErrors input (Errors errors) =
   }
 
 -- | Validation success: apply the rule and add the updated widget to the output.
-outputWidget :: ValidatedInput -> Output
-outputWidget { rule, widget } =
-  { widget: mkCmdWidget $ applyRule rule widget
+output :: ValidatedInput -> Output
+output { rule, widget } =
+  { widget: mkOutputWidget $ applyRule rule widget
   , errors: []
   }
 
 -- | Convert modified widget to output type.
-mkCmdWidget :: Widget -> CmdWidget
-mkCmdWidget widget =
+mkOutputWidget :: Widget -> OutputWidget
+mkOutputWidget widget =
   { name: nameValue widget.name
   , paint: show widget.paint
   , size: show widget.size

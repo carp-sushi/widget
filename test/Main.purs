@@ -9,7 +9,7 @@ import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 -- Modules being tested
-import Cmd (CmdWidget, Input, Output, execute, mkCmdWidget)
+import Cmd (InputWidget, Input, Output, execute)
 import Cmd.Domain (Name(..), Color(..), Size(..), Material(..), mkWidget)
 import Cmd.Errors (Errors(..), mkError)
 import Cmd.Validate
@@ -21,9 +21,13 @@ import Cmd.Validate
   )
 
 -- Test widget
-testWidget :: CmdWidget
+testWidget :: InputWidget
 testWidget =
-  mkCmdWidget $ mkWidget (Name "test") White Small Carbon
+  { name: "Test"
+  , paint: "White"
+  , size: "Small"
+  , core: "Carbon"
+  }
 
 -- Base input instance
 base :: Input

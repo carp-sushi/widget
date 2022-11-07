@@ -7,7 +7,7 @@ import Cmd.Domain (Name, Color, Material, Size, Widget)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
--- | Defines actions that may be peformed on a widget.
+-- | Action defines transformations that can be made to a widget.
 data Action
   = ApplyName Name
   | ApplyPaint Color

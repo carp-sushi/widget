@@ -2,28 +2,28 @@ module Main where
 
 import Prelude (Unit, discard, ($))
 
-import Cmd (CmdAction, CmdWidget, execute)
+import Cmd (InputRule, InputWidget, execute)
 
 import Effect (Effect)
 import Effect.Console (log, logShow)
 
 -- | Valid input rule.
-rule :: Array CmdAction
+rule :: InputRule
 rule =
   [ { name: "ApplyPaint", value: "Red" }
   , { name: "ApplySize", value: "Medium" }
   ]
 
 -- | Valid input widget.
-widget :: CmdWidget
+widget :: InputWidget
 widget =
-  { name: "default"
+  { name: "Example"
   , paint: "White"
   , size: "Small"
   , core: "Carbon"
   }
 
--- | Demonstract command execution.
+-- | Demonstrate command execution.
 main :: Effect Unit
 main = do
   let input = { rule, widget }

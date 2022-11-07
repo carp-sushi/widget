@@ -11,7 +11,7 @@ import Data.Monoid (class Monoid)
 import Data.Semigroup (class Semigroup, (<>))
 import Data.Show.Generic (genericShow)
 
--- | Defines a sequence of actions.
+-- | Rule is a sequence of actions.
 newtype Rule = Rule (Array Action)
 
 derive instance eqRule :: Eq Rule
@@ -29,9 +29,10 @@ instance monoidRule :: Monoid Rule where
 -- | Apply a rule (set of actions) to a widget.
 applyRule :: Rule -> Widget -> Widget
 applyRule (Rule actions) widget =
-  foldr (\a w -> applyAction a w) widget actions
+  foldr applyAction widget actions
 
--- | Rule helper
+-- | Create a rule with one action.
 mkRule :: Action -> Rule
 mkRule action =
   Rule [ action ]
+

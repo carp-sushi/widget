@@ -5,7 +5,9 @@ import Prelude (class Eq, class Show, (==))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
--- | Core domain object type for this example.
+-- | Widget is the core domain object type for this example,
+-- | which represents the i/o state of command execution:
+-- | S -> Cmd -> S'
 type Widget =
   { name :: Name
   , paint :: Color
