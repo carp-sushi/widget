@@ -1,9 +1,10 @@
 module Cmd.Errors where
 
-import Prelude (class Eq, class Semigroup, class Show, (<>), ($))
+import Prelude (class Eq, class Show, ($))
 
 import Data.Generic.Rep (class Generic)
 import Data.Monoid (class Monoid)
+import Data.Semigroup (class Semigroup, (<>))
 import Data.Show.Generic (genericShow)
 
 -- | Defines validation errors.

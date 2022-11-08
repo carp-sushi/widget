@@ -1,5 +1,5 @@
 {
-  "rule": [
+  "actions": [
     {"name":"ApplyCoating","value":"Wax"}
   ],
   "widget": {"name":"","paint":"","core":"","size":""}

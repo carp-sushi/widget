@@ -2,10 +2,10 @@ module Cmd where
 
 import Prelude (show, ($), (<$>), (<*>))
 
-import Cmd.Domain (Widget, nameValue)
+import Cmd.Domain (Widget)
 import Cmd.Errors (Errors(..))
-import Cmd.Rule (Rule, applyRule)
-import Cmd.Validate (validateWidget, validateRule)
+import Cmd.Action (Action, applyAction)
+import Cmd.Validate (validateWidget, validateAction)
 
 import Data.Array (foldMap)
 import Data.Validation.Semigroup (V, validation)
@@ -28,25 +28,22 @@ type InputAction =
   , value :: String
   }
 
--- | The unvalidated input rule
-type InputRule = Array InputAction
-
 -- | The unvalidated command input 
 type Input =
-  { rule :: InputRule
+  { actions :: Array InputAction
   , widget :: InputWidget
   }
 
 -- | The validated command input 
 type ValidatedInput =
-  { rule :: Rule
+  { action :: Action
   , widget :: Widget
   }
 
 -- | Validated input constructor.
-mkValidated :: Rule -> Widget -> ValidatedInput
-mkValidated rule widget =
-  { rule, widget }
+mkValidated :: Action -> Widget -> ValidatedInput
+mkValidated action widget =
+  { action, widget }
 
 -- | The command output type.
 type Output =
@@ -62,11 +59,11 @@ execute input =
     output
     (validateInput input)
 
--- | Validate input widget and rule.
+-- | Validate input widget and actions.
 validateInput :: Input -> V Errors ValidatedInput
-validateInput { widget: w, rule: actions } =
+validateInput { widget: w, actions } =
   mkValidated
-    <$> foldMap (\a -> validateRule a.name a.value) actions
+    <$> foldMap (\a -> validateAction a.name a.value) actions
     <*> validateWidget w.name w.paint w.size w.core
 
 -- | Validation failure: add validation errors to the output.
@@ -76,19 +73,17 @@ outputErrors input (Errors errors) =
   , errors
   }
 
--- | Validation success: apply the rule and add the updated widget to the output.
+-- | Validation success: apply the action and add the updated widget to the output.
 output :: ValidatedInput -> Output
-output { rule, widget } =
-  { widget: mkOutputWidget $ applyRule rule widget
+output { action, widget } =
+  { widget: mkOutput $ applyAction action widget
   , errors: []
   }
-
--- | Convert modified widget to output type.
-mkOutputWidget :: Widget -> OutputWidget
-mkOutputWidget widget =
-  { name: nameValue widget.name
-  , paint: show widget.paint
-  , size: show widget.size
-  , core: show widget.core
-  }
+  where
+    mkOutput w =
+      { name: show w.name
+      , paint: show w.paint
+      , size: show w.size
+      , core: show w.core
+      }
 

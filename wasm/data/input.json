@@ -1,5 +1,5 @@
 {
-  "rule": [
+  "actions": [
     {"name":"ApplyName","value":"MyWidget"},
     {"name":"ApplySize","value":"Large"},
     {"name":"ApplyCore","value":"Steel"},

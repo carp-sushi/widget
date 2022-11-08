@@ -2,16 +2,17 @@ module Main where
 
 import Prelude (Unit, discard, ($))
 
-import Cmd (InputRule, InputWidget, execute)
+import Cmd (InputAction, InputWidget, execute)
 
 import Effect (Effect)
 import Effect.Console (log, logShow)
 
--- | Valid input rule.
-rule :: InputRule
-rule =
+-- | Valid input actions.
+actions :: Array InputAction
+actions =
   [ { name: "ApplyPaint", value: "Red" }
   , { name: "ApplySize", value: "Medium" }
+  , { name: "ApplyPaint", value: "Green" } -- Last action wins
   ]
 
 -- | Valid input widget.
@@ -26,7 +27,7 @@ widget =
 -- | Demonstrate command execution.
 main :: Effect Unit
 main = do
-  let input = { rule, widget }
+  let input = { actions, widget }
   log "input:"
   logShow input
   log "output:"

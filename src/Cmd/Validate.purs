@@ -5,7 +5,6 @@ import Prelude (pure, (<>), (<*>), (<$>), ($))
 import Cmd.Action (Action(..))
 import Cmd.Domain (Color(..), Material(..), Name(..), Size(..), Widget, mkWidget)
 import Cmd.Errors (Errors, mkError)
-import Cmd.Rule (Rule, mkRule)
 
 import Data.String.Common (trim)
 import Data.Validation.Semigroup (V, andThen, invalid)
@@ -20,7 +19,7 @@ nonEmpty field s =
 -- | Name validation
 validateName :: String -> V Errors Name
 validateName s =
-  nonEmpty "Name" s `andThen` \value -> pure $ Name value
+  Name <$> nonEmpty "Name" s
 
 -- | Color validation 
 validateColor :: String -> V Errors Color
@@ -75,9 +74,4 @@ validateAction name value =
       "ApplyCore" -> ApplyCore <$> validateMaterial value
       "ApplySize" -> ApplySize <$> validateSize value
       _ -> invalid $ mkError $ "Invalid action: " <> name
-
--- | Make a rule from validating a single action.
-validateRule :: String -> String -> V Errors Rule
-validateRule name value =
-  mkRule <$> validateAction name value
 

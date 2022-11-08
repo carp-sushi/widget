@@ -1,6 +1,6 @@
 module Test.Main where
 
-import Prelude (Unit, discard, pure, show, ($))
+import Prelude (Unit, discard, pure, show, ($), (<>))
 
 import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
@@ -10,6 +10,7 @@ import Test.Unit.Main (runTest)
 
 -- Modules being tested
 import Cmd (InputWidget, Input, Output, execute)
+import Cmd.Action (Action(..))
 import Cmd.Domain (Name(..), Color(..), Size(..), Material(..), mkWidget)
 import Cmd.Errors (Errors(..), mkError)
 import Cmd.Validate
@@ -32,7 +33,7 @@ testWidget =
 -- Base input instance
 base :: Input
 base =
-  { rule: []
+  { actions: []
   , widget: testWidget
   }
 
@@ -46,7 +47,7 @@ baseOut =
 -- Command input.
 input :: Input
 input =
-  { rule: [ { name: "ApplyPaint", value: show Black } ]
+  { actions: [ { name: "ApplyPaint", value: show Black } ]
   , widget: testWidget
   }
 
@@ -60,7 +61,7 @@ expected =
 -- Command input with multiple actions
 multiInput :: Input
 multiInput =
-  { rule:
+  { actions:
       [ { name: "ApplyPaint", value: show Black }
       , { name: "ApplyName", value: "MultiTest" }
       ]
@@ -77,7 +78,7 @@ multiOutput =
 -- Invalid command input.
 invalidInput :: Input
 invalidInput =
-  { rule:
+  { actions:
       [ { name: "ApplyCoating", value: "Wax" }
       , { name: "", value: "" }
       ]
@@ -114,6 +115,7 @@ main = do
   runTest do
     cmdTest
     widgetTest
+    actionTest
     nameTest
     colorTest
     sizeTest
@@ -149,6 +151,25 @@ widgetTest = do
             ]
         )
         (validateWidget "Test" "Carbon" "Black" "Small")
+
+-- Name for testing
+testName :: Name
+testName =
+  Name "test"
+
+-- Test action semigroup
+actionTest :: TestSuite
+actionTest = do
+  suite "action <> should" do
+    test "combine into Cons" do
+      Assert.equal
+        (Cons (ApplyPaint Green) (Cons (ApplyCore Carbon) (ApplySize Small)))
+        (Nil <> (ApplyPaint Green) <> (ApplyCore Carbon) <> (ApplySize Small) <> Nil)
+    test "drop Nil" do
+      Assert.equal (ApplyName testName) (Nil <> (ApplyName testName))
+      Assert.equal (ApplySize Small) ((ApplySize Small) <> Nil)
+    test "combine Nil<>Nil to Nil" do
+      Assert.equal Nil (Nil <> Nil)
 
 -- Test name validation
 nameTest :: TestSuite
