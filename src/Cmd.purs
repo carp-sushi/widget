@@ -1,6 +1,6 @@
 module Cmd where
 
-import Prelude (show, ($), (<$>), (<*>))
+import Prelude (show, (<$>), (<*>))
 
 import Cmd.Domain (Widget)
 import Cmd.Errors (Errors(..))
@@ -76,14 +76,15 @@ outputErrors input (Errors errors) =
 -- | Validation success: apply the action and add the updated widget to the output.
 output :: ValidatedInput -> Output
 output { action, widget } =
-  { widget: mkOutput $ applyAction action widget
-  , errors: []
-  }
-  where
-    mkOutput w =
+  let
+    w = applyAction action widget
+  in
+  { widget:
       { name: show w.name
       , paint: show w.paint
       , size: show w.size
       , core: show w.core
       }
+  , errors: []
+  }
 
